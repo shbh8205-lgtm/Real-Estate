@@ -1,0 +1,45 @@
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\bin\Debug\net8.0\RealEstate.Application.deps.json
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\bin\Debug\net8.0\RealEstate.Application.dll
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\bin\Debug\net8.0\RealEstate.Application.pdb
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\bin\Debug\net8.0\RealEstate.Domain.dll
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\bin\Debug\net8.0\RealEstate.Domain.pdb
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.csproj.AssemblyReference.cache
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.AssemblyInfoInputs.cache
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.AssemblyInfo.cs
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.csproj.CoreCompileInputs.cache
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\obj\Debug\net8.0\RealEsta.ABD55878.Up2Date
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.dll
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\obj\Debug\net8.0\refint\RealEstate.Application.dll
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.pdb
+C:\Users\This User\Documents\My Web Sites\RealEstate.Application\obj\Debug\net8.0\ref\RealEstate.Application.dll
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\bin\Debug\net8.0\RealEstate.Application.deps.json
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\bin\Debug\net8.0\RealEstate.Application.dll
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\bin\Debug\net8.0\RealEstate.Application.pdb
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\bin\Debug\net8.0\RealEstate.Domain.dll
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\bin\Debug\net8.0\RealEstate.Domain.pdb
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.csproj.AssemblyReference.cache
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.AssemblyInfoInputs.cache
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.AssemblyInfo.cs
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.csproj.CoreCompileInputs.cache
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\obj\Debug\net8.0\RealEsta.ABD55878.Up2Date
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.dll
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\obj\Debug\net8.0\refint\RealEstate.Application.dll
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.pdb
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Application\obj\Debug\net8.0\ref\RealEstate.Application.dll
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\bin\Debug\net8.0\RealEstate.Application.deps.json
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\bin\Debug\net8.0\RealEstate.Application.dll
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\bin\Debug\net8.0\RealEstate.Application.pdb
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\bin\Debug\net8.0\RealEstate.Domain.dll
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\bin\Debug\net8.0\RealEstate.Domain.pdb
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.csproj.AssemblyReference.cache
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.AssemblyInfoInputs.cache
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.AssemblyInfo.cs
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.csproj.CoreCompileInputs.cache
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\obj\Debug\net8.0\RealEsta.ABD55878.Up2Date
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.dll
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\obj\Debug\net8.0\refint\RealEstate.Application.dll
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\obj\Debug\net8.0\RealEstate.Application.pdb
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Application\obj\Debug\net8.0\ref\RealEstate.Application.dll

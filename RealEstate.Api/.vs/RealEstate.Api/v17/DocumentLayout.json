@@ -1,0 +1,77 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\This User\\Documents\\My Web Sites\\Real Estate\\RealEstate.Api\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F0900AF7-E13D-42D6-AF93-403C79294C66}|RealEstate.Api.csproj|c:\\users\\this user\\documents\\my web sites\\real estate\\realestate.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0900AF7-E13D-42D6-AF93-403C79294C66}|RealEstate.Api.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F0900AF7-E13D-42D6-AF93-403C79294C66}|RealEstate.Api.csproj|c:\\users\\this user\\documents\\my web sites\\real estate\\realestate.api\\controllers\\priceestimatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0900AF7-E13D-42D6-AF93-403C79294C66}|RealEstate.Api.csproj|solutionrelative:controllers\\priceestimatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F0900AF7-E13D-42D6-AF93-403C79294C66}|RealEstate.Api.csproj|c:\\users\\this user\\documents\\my web sites\\real estate\\realestate.api\\realestate.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{F0900AF7-E13D-42D6-AF93-403C79294C66}|RealEstate.Api.csproj|solutionrelative:realestate.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\This User\\Documents\\My Web Sites\\Real Estate\\RealEstate.Api\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\This User\\Documents\\My Web Sites\\Real Estate\\RealEstate.Api\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAEcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T12:42:42.373Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PriceEstimateController.cs",
+              "DocumentMoniker": "C:\\Users\\This User\\Documents\\My Web Sites\\Real Estate\\RealEstate.Api\\Controllers\\PriceEstimateController.cs",
+              "RelativeDocumentMoniker": "Controllers\\PriceEstimateController.cs",
+              "ToolTip": "C:\\Users\\This User\\Documents\\My Web Sites\\Real Estate\\RealEstate.Api\\Controllers\\PriceEstimateController.cs",
+              "RelativeToolTip": "Controllers\\PriceEstimateController.cs",
+              "ViewState": "AgIAADcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T12:32:56.714Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RealEstate.Api.csproj",
+              "DocumentMoniker": "C:\\Users\\This User\\Documents\\My Web Sites\\Real Estate\\RealEstate.Api\\RealEstate.Api.csproj",
+              "RelativeDocumentMoniker": "RealEstate.Api.csproj",
+              "ToolTip": "C:\\Users\\This User\\Documents\\My Web Sites\\Real Estate\\RealEstate.Api\\RealEstate.Api.csproj",
+              "RelativeToolTip": "RealEstate.Api.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAUwBMAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-06T11:17:24.305Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

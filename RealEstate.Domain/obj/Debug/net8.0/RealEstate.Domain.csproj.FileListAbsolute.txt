@@ -1,0 +1,34 @@
+C:\Users\This User\Documents\My Web Sites\RealEstate.Domain\bin\Debug\net8.0\RealEstate.Domain.deps.json
+C:\Users\This User\Documents\My Web Sites\RealEstate.Domain\bin\Debug\net8.0\RealEstate.Domain.dll
+C:\Users\This User\Documents\My Web Sites\RealEstate.Domain\bin\Debug\net8.0\RealEstate.Domain.pdb
+C:\Users\This User\Documents\My Web Sites\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\This User\Documents\My Web Sites\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.AssemblyInfoInputs.cache
+C:\Users\This User\Documents\My Web Sites\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.AssemblyInfo.cs
+C:\Users\This User\Documents\My Web Sites\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.csproj.CoreCompileInputs.cache
+C:\Users\This User\Documents\My Web Sites\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.dll
+C:\Users\This User\Documents\My Web Sites\RealEstate.Domain\obj\Debug\net8.0\refint\RealEstate.Domain.dll
+C:\Users\This User\Documents\My Web Sites\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.pdb
+C:\Users\This User\Documents\My Web Sites\RealEstate.Domain\obj\Debug\net8.0\ref\RealEstate.Domain.dll
+C:\Users\This User\Documents\My Web Sites\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.csproj.AssemblyReference.cache
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Domain\bin\Debug\net8.0\RealEstate.Domain.deps.json
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Domain\bin\Debug\net8.0\RealEstate.Domain.dll
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Domain\bin\Debug\net8.0\RealEstate.Domain.pdb
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.AssemblyInfoInputs.cache
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.AssemblyInfo.cs
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.csproj.CoreCompileInputs.cache
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.dll
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Domain\obj\Debug\net8.0\refint\RealEstate.Domain.dll
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.pdb
+C:\Users\This User\Documents\My Web Sites\תיווך נדלן\RealEstate.Domain\obj\Debug\net8.0\ref\RealEstate.Domain.dll
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Domain\bin\Debug\net8.0\RealEstate.Domain.deps.json
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Domain\bin\Debug\net8.0\RealEstate.Domain.dll
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Domain\bin\Debug\net8.0\RealEstate.Domain.pdb
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.AssemblyInfoInputs.cache
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.AssemblyInfo.cs
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.csproj.CoreCompileInputs.cache
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.dll
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Domain\obj\Debug\net8.0\refint\RealEstate.Domain.dll
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Domain\obj\Debug\net8.0\RealEstate.Domain.pdb
+C:\Users\This User\Documents\My Web Sites\Real Estate\RealEstate.Domain\obj\Debug\net8.0\ref\RealEstate.Domain.dll
