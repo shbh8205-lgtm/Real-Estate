@@ -1,4 +1,4 @@
-﻿// using OpenAI.Embeddings;
+// using OpenAI.Embeddings;
 // using RealEstate.Domain.Interfaces;
 
 // public class OpenAiPropertyAnalyst : IAiPropertyAnalyst

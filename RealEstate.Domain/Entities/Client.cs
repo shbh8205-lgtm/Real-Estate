@@ -1,4 +1,4 @@
-﻿using RealEstate.Domain.Entities;
+using RealEstate.Domain.Entities;
 using System.Collections.Generic;
 
 namespace RealEstate.Domain.Entities
