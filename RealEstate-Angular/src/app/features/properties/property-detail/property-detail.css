@@ -1,0 +1,262 @@
+.property-detail {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.property-detail > a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.property-detail article {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.property-detail h2 { margin-top: 0; }
+.property-detail .price { color: #16a34a; font-weight: 600; font-size: 1.2rem; }
+.property-detail .address { color: #6b7280; }
+.property-detail .description { line-height: 1.5; margin: 1rem 0; }
+.property-detail .tags { color: #4b5563; }
+.property-detail .created { color: #9ca3af; font-size: 0.85rem; }
+
+.lead-form {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.lead-form h3 { margin-top: 0; }
+
+.lead-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lead-form textarea {
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.lead-form button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.lead-form button:disabled { background: #93c5fd; cursor: not-allowed; }
+
+.lead-form .success {
+  color: #166534;
+  background: #dcfce7;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin: 0;
+}
+
+.lead-form .error {
+  color: #b91c1c;
+  background: #fee2e2;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin: 0;
+}
+
+.lead-form .field-error {
+  color: #b91c1c;
+  font-size: 0.85rem;
+  margin: -0.25rem 0 0;
+}
+
+.ml-panel {
+  background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
+  border: 1px solid #c7d2fe;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.ml-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ml-panel h3 {
+  margin: 0;
+  color: #4338ca;
+}
+
+.toggle-btn {
+  background: transparent;
+  color: #4338ca;
+  border: 1px solid #4338ca;
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.toggle-btn:hover {
+  background: #eef2ff;
+}
+
+.comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 6px;
+}
+
+.comparison .col {
+  text-align: center;
+}
+
+.comparison .label {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.ml-price {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.listed-price {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+.band {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 0.25rem;
+}
+
+.delta {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.delta.over {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.delta.under {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.delta.fair {
+  color: #4b5563;
+  background: #f3f4f6;
+}
+
+.ml-panel .hint {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.ml-panel .muted {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.estimate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #c7d2fe;
+}
+
+.estimate-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  color: #374151;
+}
+
+.estimate-form select,
+.estimate-form input[type="number"] {
+  margin-top: 0.2rem;
+  padding: 0.4rem;
+  border: 1px solid #c7d2fe;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.estimate-form .row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.estimate-form .checks {
+  display: flex;
+  gap: 1rem;
+}
+
+.estimate-form .check {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.estimate-btn {
+  background: #4338ca;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  align-self: flex-start;
+  padding: 0.5rem 1rem;
+}
+
+.estimate-btn:disabled {
+  background: #a5b4fc;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .estimate-form .row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .comparison {
+    grid-template-columns: 1fr;
+  }
+}

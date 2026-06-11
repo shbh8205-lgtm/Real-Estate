@@ -1,0 +1,38 @@
+.app-nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background: #1f2937;
+  color: white;
+  direction: rtl;
+}
+
+.app-nav a {
+  color: #d1d5db;
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.app-nav a:hover { color: white; }
+.app-nav a.active { background: #374151; color: white; }
+
+.app-nav .user {
+  margin-inline-start: auto;
+  font-weight: 500;
+}
+
+.app-nav button {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.app-main {
+  padding: 1.5rem;
+  direction: rtl;
+}

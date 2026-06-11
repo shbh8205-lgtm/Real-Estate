@@ -96,11 +96,22 @@ namespace RealEstate.Application.Chat
                 var jsonResult = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
                 var rawContent = jsonResult.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString();
 
-                var aiData = JsonSerializer.Deserialize<OpenRouterChatResponse>(rawContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                if (string.IsNullOrWhiteSpace(rawContent))
+                {
+                    return GetFallbackReply("לא קיבלתי תשובה מהמערכת. נסה לנסח מחדש.");
+                }
+
+                // המודל לעיתים עוטף את ה-JSON ב-```json ... ``` או מוסיף טקסט מסביב.
+                // ננקה את העטיפה ונחלץ את אובייקט ה-JSON לפני הפענוח.
+                var aiData = TryParseAiResponse(rawContent);
 
                 if (aiData == null)
                 {
-                    return GetFallbackReply("לא הצלחתי לעבד את פרמטרי החיפוש.");
+                    // לא הצלחנו לפענח JSON - נחזיר את הטקסט שהמודל כתב כתשובה רגילה,
+                    // כדי שהמשתמש יקבל מענה במקום שגיאה גנרית.
+                    history.Add(new { role = "assistant", content = rawContent });
+                    _cache.Set(cacheKey, history, TimeSpan.FromMinutes(20));
+                    return GetFallbackReply(rawContent.Trim());
                 }
 
                 // שמירת תשובת ה-AI (הטקסט שהוא ייצר עבור המשתמש) בהיסטוריה
@@ -151,6 +162,28 @@ namespace RealEstate.Application.Chat
         private ChatReply GetFallbackReply(string message)
         {
             return new ChatReply(message, new List<PropertyDto>());
+        }
+
+        // מחלץ אובייקט JSON מתוך תשובת המודל, גם אם הוא עטוף ב-```json``` או מלווה בטקסט.
+        private static OpenRouterChatResponse? TryParseAiResponse(string rawContent)
+        {
+            var start = rawContent.IndexOf('{');
+            var end = rawContent.LastIndexOf('}');
+            if (start < 0 || end <= start)
+            {
+                return null;
+            }
+
+            var json = rawContent.Substring(start, end - start + 1);
+            try
+            {
+                return JsonSerializer.Deserialize<OpenRouterChatResponse>(
+                    json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            }
+            catch (JsonException)
+            {
+                return null;
+            }
         }
     }
 }

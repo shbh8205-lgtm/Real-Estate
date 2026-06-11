@@ -50,6 +50,12 @@ builder.Services.AddSingleton<IPriceEstimator, MlNetPriceEstimator>();
 // במקום הרישום הרגיל, אנחנו מוסיפים תמיכה ב-HttpClient עבור השירות הזה
 builder.Services.AddHttpClient<IAiPropertyAnalyst, OpenAiPropertyAnalyst>();
 
+// ChatHandler (ב-MediatR) מבקש HttpClient רגיל בבנאי. בלי הרישום הזה ה-DI נכשל
+// והקריאה ל-/api/chat מחזירה 500. הרישום מספק HttpClient דרך ה-IHttpClientFactory.
+builder.Services.AddHttpClient();
+builder.Services.AddTransient(sp =>
+    sp.GetRequiredService<IHttpClientFactory>().CreateClient());
+
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

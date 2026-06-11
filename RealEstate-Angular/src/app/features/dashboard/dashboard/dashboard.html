@@ -1,0 +1,62 @@
+<div class="dashboard">
+  <h2>לוח בקרה</h2>
+
+  @if (loading()) {
+    <p>טוען...</p>
+  }
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (data(); as d) {
+    <div class="stats">
+      <div class="stat">
+        <div class="label">סה"כ נכסים</div>
+        <div class="value">{{ d.totalProperties }}</div>
+      </div>
+      <div class="stat">
+        <div class="label">מחיר ממוצע</div>
+        <div class="value">{{ d.averagePrice | number:'1.0-0' }} ₪</div>
+      </div>
+      <div class="stat">
+        <div class="label">טווח מחירים</div>
+        <div class="value small">
+          @if (d.totalProperties > 0) {
+            {{ d.minPrice | number:'1.0-0' }} – {{ d.maxPrice | number:'1.0-0' }} ₪
+          } @else {
+            —
+          }
+        </div>
+      </div>
+      <div class="stat">
+        <div class="label">סה"כ פניות</div>
+        <div class="value">{{ d.totalLeads }}</div>
+      </div>
+    </div>
+
+    <section class="leads">
+      <h3>פניות אחרונות</h3>
+      @if (d.recentLeads.length === 0) {
+        <p class="empty">אין עדיין פניות.</p>
+      } @else {
+        <ul>
+          @for (lead of d.recentLeads; track lead.id) {
+            <li class="lead">
+              <div class="lead-header">
+                <a [routerLink]="['/properties', lead.propertyId]">{{ lead.propertyTitle }}</a>
+                <span class="when">{{ lead.createdAt | date:'short' }}</span>
+              </div>
+              <p class="message">{{ lead.message }}</p>
+              <div class="contact">
+                <strong>{{ lead.clientName }}</strong>
+                <span>{{ lead.clientEmail }}</span>
+                @if (lead.clientPhone) { <span>{{ lead.clientPhone }}</span> }
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  }
+</div>

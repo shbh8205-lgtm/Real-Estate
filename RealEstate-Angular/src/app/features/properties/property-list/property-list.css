@@ -1,0 +1,56 @@
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.add-btn {
+  background: #16a34a;
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.add-btn:hover { background: #15803d; }
+
+.cards {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.card a {
+  display: block;
+  padding: 1rem;
+  color: #111827;
+  text-decoration: none;
+}
+
+.card h3 { margin: 0 0 0.5rem; font-size: 1.1rem; }
+.card .price { color: #16a34a; font-weight: 600; margin: 0.25rem 0; }
+.card .address { color: #6b7280; font-size: 0.9rem; margin: 0.25rem 0; }
+.card .tags { color: #4b5563; font-size: 0.85rem; margin: 0.5rem 0 0; }
+
+.error {
+  color: #b91c1c;
+  background: #fee2e2;
+  padding: 0.5rem;
+  border-radius: 4px;
+}

@@ -1,0 +1,188 @@
+.property-form {
+  max-width: 600px;
+  margin: 1rem auto;
+}
+
+.property-form > a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.property-form h2 { margin: 1rem 0; }
+
+.property-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: white;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.property-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.property-form input,
+.property-form textarea {
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.property-form textarea { resize: vertical; }
+
+.property-form button {
+  margin-top: 0.5rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.property-form button:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+}
+
+.property-form .error {
+  color: #b91c1c;
+  background: #fee2e2;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin: 0;
+}
+
+.property-form .field-error {
+  color: #b91c1c;
+  font-size: 0.85rem;
+  margin: -0.25rem 0 0;
+}
+
+.property-form .hint {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin: -0.25rem 0 0;
+}
+
+.ml-panel {
+  background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
+  border: 1px solid #c7d2fe;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.ml-panel h3 {
+  margin: 0 0 0.25rem;
+  color: #4338ca;
+}
+
+.estimate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: transparent;
+  border: none;
+  padding: 0.5rem 0 0;
+}
+
+.estimate-form select,
+.estimate-form input[type="number"] {
+  margin-top: 0.2rem;
+  padding: 0.4rem;
+  border: 1px solid #c7d2fe;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.estimate-form .row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.estimate-form .row label {
+  font-size: 0.85rem;
+}
+
+.estimate-form .checks {
+  display: flex;
+  gap: 1rem;
+}
+
+.estimate-form .check {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.estimate-btn {
+  background: #4338ca;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.estimate-btn:disabled {
+  background: #a5b4fc;
+  cursor: not-allowed;
+}
+
+.result {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: white;
+  border: 1px solid #c7d2fe;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.result .big-price {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.result .band {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.use-btn {
+  background: white;
+  color: #4338ca;
+  border: 1px solid #4338ca;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.use-btn:hover {
+  background: #eef2ff;
+}
+
+@media (max-width: 600px) {
+  .estimate-form .row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

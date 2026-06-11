@@ -1,0 +1,35 @@
+<div class="property-list">
+  <div class="list-header">
+    <h2>נכסים</h2>
+    @if (isAgent()) {
+      <a class="add-btn" routerLink="/properties/new">+ נכס חדש</a>
+    }
+  </div>
+
+  @if (loading()) {
+    <p>טוען...</p>
+  }
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (!loading() && !error() && properties().length === 0) {
+    <p>לא נמצאו נכסים.</p>
+  }
+
+  <ul class="cards">
+    @for (property of properties(); track property.id) {
+      <li class="card">
+        <a [routerLink]="['/properties', property.id]">
+          <h3>{{ property.title }}</h3>
+          <p class="price">{{ property.price | number }} ₪</p>
+          <p class="address">{{ property.address }}</p>
+          @if (property.tags) {
+            <p class="tags">{{ property.tags }}</p>
+          }
+        </a>
+      </li>
+    }
+  </ul>
+</div>

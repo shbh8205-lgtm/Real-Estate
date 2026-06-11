@@ -1,0 +1,94 @@
+<div class="property-form">
+  <a routerLink="/properties">← חזרה לרשימה</a>
+  <h2>הוספת נכס חדש</h2>
+
+  <section class="ml-panel">
+    <h3>🤖 הערכת מחיר עם ML.NET</h3>
+    <p class="hint">מלא את הפרטים הטכניים כדי לקבל הערכת מחיר חזויה ממודל למידת מכונה.</p>
+
+    <form [formGroup]="estimateForm" (ngSubmit)="runEstimate()" class="estimate-form">
+      <label>
+        עיר
+        <select formControlName="city">
+          @for (c of cities(); track c) {
+            <option [value]="c">{{ c }}</option>
+          }
+        </select>
+      </label>
+
+      <div class="row">
+        <label>חדרים<input type="number" formControlName="rooms" min="1" max="10" /></label>
+        <label>גודל (מ"ר)<input type="number" formControlName="sizeSqm" min="20" /></label>
+        <label>קומה<input type="number" formControlName="floor" min="0" /></label>
+        <label>גיל (שנים)<input type="number" formControlName="age" min="0" /></label>
+      </div>
+
+      <div class="checks">
+        <label class="check"><input type="checkbox" formControlName="hasParking" /> חניה</label>
+        <label class="check"><input type="checkbox" formControlName="hasElevator" /> מעלית</label>
+      </div>
+
+      <button type="submit" class="estimate-btn" [disabled]="isEstimating()">
+        {{ isEstimating() ? 'מחשב...' : 'חשב הערכה' }}
+      </button>
+
+      @if (estimateError()) {
+        <p class="error">{{ estimateError() }}</p>
+      }
+
+      @if (estimate(); as e) {
+        <div class="result">
+          <div class="big-price">{{ e.estimatedPrice | number:'1.0-0' }} ₪</div>
+          <div class="band">טווח סביר: {{ e.lowerBound | number:'1.0-0' }} – {{ e.upperBound | number:'1.0-0' }} ₪</div>
+          <button type="button" class="use-btn" (click)="useEstimatedPrice()">
+            השתמש בערך זה במחיר הנכס
+          </button>
+        </div>
+      }
+    </form>
+  </section>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label>
+      כותרת
+      <input type="text" formControlName="title" placeholder="לדוגמה: דירת 4 חדרים בתל אביב" />
+    </label>
+    @if (form.controls.title.touched && form.controls.title.invalid) {
+      <p class="field-error">כותרת חייבת להכיל לפחות 3 תווים</p>
+    }
+
+    <label>
+      תיאור
+      <textarea formControlName="description" rows="5"
+                placeholder="תאר את הנכס: מאפיינים, נוף, קרבה לתחבורה..."></textarea>
+    </label>
+    @if (form.controls.description.touched && form.controls.description.invalid) {
+      <p class="field-error">תיאור חייב להכיל לפחות 10 תווים</p>
+    }
+    <p class="hint">ה-AI ינתח את התיאור ויוציא ממנו תגיות אוטומטית.</p>
+
+    <label>
+      מחיר (₪)
+      <input type="number" formControlName="price" min="1" />
+    </label>
+    @if (form.controls.price.touched && form.controls.price.invalid) {
+      <p class="field-error">מחיר חייב להיות גדול מ-0</p>
+    }
+
+    <label>
+      כתובת
+      <input type="text" formControlName="address" placeholder="רחוב, מספר, עיר" />
+    </label>
+    @if (form.controls.address.touched && form.controls.address.invalid) {
+      <p class="field-error">שדה חובה</p>
+    }
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <button type="submit" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'יוצר...' : 'צור נכס' }}
+    </button>
+  </form>
+</div>

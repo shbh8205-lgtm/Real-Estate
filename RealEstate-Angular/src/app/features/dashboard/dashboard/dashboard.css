@@ -1,0 +1,102 @@
+.dashboard {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.dashboard h2 { margin-top: 0; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 2rem;
+}
+
+.stat {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+}
+
+.stat .label {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.stat .value {
+  color: #111827;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.stat .value.small { font-size: 1rem; }
+
+.leads h3 { margin: 0 0 0.75rem; }
+
+.leads ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lead {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.lead-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+
+.lead-header a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.lead-header a:hover { text-decoration: underline; }
+
+.lead-header .when {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.lead .message {
+  margin: 0.5rem 0;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.lead .contact {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  color: #6b7280;
+  font-size: 0.9rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.lead .contact strong { color: #111827; }
+
+.empty {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.error {
+  color: #b91c1c;
+  background: #fee2e2;
+  padding: 0.5rem;
+  border-radius: 4px;
+}

@@ -1,0 +1,30 @@
+# ---- Visual Studio / Rider ----
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ---- .NET build output ----
+[Bb]in/
+[Oo]bj/
+*.dll
+*.pdb
+artifacts/
+
+# ---- Secrets / local config ----
+# Never commit real secrets. Use dotnet user-secrets or environment variables.
+appsettings.*.local.json
+secrets.json
+
+# ---- Node / Angular ----
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+
+# ---- Misc ----
+*.stackdump
+*.log
+*.docx

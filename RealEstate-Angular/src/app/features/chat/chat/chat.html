@@ -1,0 +1,41 @@
+<div class="chat">
+  <h2>צ'אט חכם</h2>
+
+  <div class="messages" #scroller>
+    @for (msg of messages(); track $index) {
+      <div class="message" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
+        <div class="bubble">
+          <p>{{ msg.text }}</p>
+          @if (msg.properties && msg.properties.length > 0) {
+            <ul class="suggestions">
+              @for (p of msg.properties; track p.id) {
+                <li>
+                  <a [routerLink]="['/properties', p.id]">
+                    <strong>{{ p.title }}</strong>
+                    <span class="price">{{ p.price | number }} ₪</span>
+                    <span class="address">{{ p.address }}</span>
+                  </a>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+    }
+    @if (isSending()) {
+      <div class="message assistant">
+        <div class="bubble typing">חושב...</div>
+      </div>
+    }
+  </div>
+
+  <form class="composer" [formGroup]="form" (ngSubmit)="send()">
+    <input
+      type="text"
+      formControlName="message"
+      placeholder="לדוגמה: דירת 4 חדרים בתל אביב עם מרפסת עד 3 מיליון"
+      [disabled]="isSending()"
+    />
+    <button type="submit" [disabled]="form.invalid || isSending()">שלח</button>
+  </form>
+</div>

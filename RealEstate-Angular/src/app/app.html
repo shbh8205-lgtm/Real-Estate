@@ -1,0 +1,16 @@
+<nav class="app-nav">
+  <a routerLink="/properties" routerLinkActive="active">נכסים</a>
+  @if (auth.isLoggedIn()) {
+    <a routerLink="/chat" routerLinkActive="active">צ'אט</a>
+    <a routerLink="/dashboard" routerLinkActive="active">לוח בקרה</a>
+    <span class="user">{{ auth.currentUser()?.fullName }}</span>
+    <button (click)="auth.logout()">התנתק</button>
+  } @else {
+    <a routerLink="/auth/login" routerLinkActive="active">התחברות</a>
+    <a routerLink="/auth/register" routerLinkActive="active">הרשמה</a>
+  }
+</nav>
+
+<main class="app-main">
+  <router-outlet />
+</main>

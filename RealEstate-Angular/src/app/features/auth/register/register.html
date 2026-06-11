@@ -1,0 +1,63 @@
+<div class="auth-card">
+  <h2>הרשמה</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label>
+      שם מלא
+      <input type="text" formControlName="fullName" autocomplete="name" />
+    </label>
+    @if (form.controls.fullName.touched && form.controls.fullName.invalid) {
+      <p class="field-error">שם חייב להכיל לפחות 2 תווים</p>
+    }
+
+    <label>
+      אימייל
+      <input type="email" formControlName="email" autocomplete="email" />
+    </label>
+    @if (form.controls.email.touched && form.controls.email.invalid) {
+      <p class="field-error">אנא הזן אימייל תקין</p>
+    }
+
+    <label>
+      סיסמה
+      <input type="password" formControlName="password" autocomplete="new-password" />
+    </label>
+    @if (form.controls.password.touched && form.controls.password.invalid) {
+      <p class="field-error">סיסמה חייבת להיות לפחות 6 תווים</p>
+    }
+
+    <label>
+      טלפון
+      <input type="tel" formControlName="phoneNumber" autocomplete="tel" />
+    </label>
+    @if (form.controls.phoneNumber.touched && form.controls.phoneNumber.invalid) {
+      <p class="field-error">שדה חובה</p>
+    }
+
+    <label>
+      תקציב מקסימלי (₪)
+      <input type="number" formControlName="maxBudget" min="0" />
+    </label>
+
+    <label>
+      סוג
+      <select formControlName="role">
+        <option value="Buyer">קונה</option>
+        <option value="Renter">שוכר</option>
+        <option value="Agent">מתווך/סוכן</option>
+      </select>
+    </label>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <button type="submit" [disabled]="isLoading()">
+      {{ isLoading() ? 'נטען...' : 'הירשם' }}
+    </button>
+  </form>
+
+  <p class="alt">
+    כבר יש לך חשבון? <a routerLink="/auth/login">התחברות</a>
+  </p>
+</div>

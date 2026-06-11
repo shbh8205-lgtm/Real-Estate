@@ -17,22 +17,22 @@ namespace RealEstate.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<ChatReply>> Send([FromBody] ChatRequestDto request)
         {
-            // αγιχϊ αθιηεϊ χθπδ - ΰν δχμιιπθ μΰ ωμη ξζδδ ωιηδ, πιιφψ ΰηγ ζξπι ΰε χαες
-            // (αωμα δαΰ ϊελμι μδςαιψ ξζδδ ΰξιϊι ξδτψεπθΰπγ)
+            // Χ‘Χ“Χ™Χ§Χª Χ‘ΧΧ™Χ—Χ•Χª Χ§ΧΧ Χ” - ΧΧ Χ”Χ§ΧΧ™Χ™Χ Χ ΧΧ Χ©ΧΧ— ΧΧ–Χ”Χ” Χ©Χ™Χ—Χ”, Χ Χ™Χ™Χ¦Χ¨ ΧΧ—Χ“ Χ–ΧΧ Χ™ ΧΧ• Χ§Χ‘Χ•ΧΆ
+            // (Χ‘Χ©ΧΧ‘ Χ”Χ‘Χ ΧªΧ•Χ›ΧΧ™ ΧΧ”ΧΆΧ‘Χ™Χ¨ ΧΧ–Χ”Χ” ΧΧΧ™ΧªΧ™ ΧΧ”Χ¤Χ¨Χ•Χ ΧΧΧ Χ“)
             var conversationId = string.IsNullOrEmpty(request.ConversationId)
                 ? "default_user_session"
                 : request.ConversationId;
 
-            // απιιϊ δ-ChatQuery δξςεγλο ςν ωπι δτψξθψιν
+            // Χ‘Χ Χ™Χ™Χª Χ”-ChatQuery Χ”ΧΧΆΧ•Χ“Χ›Χ ΧΆΧ Χ©Χ Χ™ Χ”Χ¤Χ¨ΧΧΧ¨Χ™Χ
             var query = new ChatQuery(request.Message, conversationId);
 
-            // ωμιηδ μ-Handler
+            // Χ©ΧΧ™Χ—Χ” Χ-Handler
             var result = await _mediator.Send(query);
             return Ok(result);
         }
     }
 
-    // ΰεαιιχθ ςζψ μχαμϊ δξιγς ξδχμιιπθ αωιμεα ςν ξζδδ δωιηδ
+    // ΧΧ•Χ‘Χ™Χ™Χ§Χ ΧΆΧ–Χ¨ ΧΧ§Χ‘ΧΧª Χ”ΧΧ™Χ“ΧΆ ΧΧ”Χ§ΧΧ™Χ™Χ Χ Χ‘Χ©Χ™ΧΧ•Χ‘ ΧΆΧ ΧΧ–Χ”Χ” Χ”Χ©Χ™Χ—Χ”
     public class ChatRequestDto
     {
         public string Message { get; set; } = string.Empty;

@@ -1,0 +1,116 @@
+<div class="property-detail">
+  <a [routerLink]="['/properties']">← חזרה לרשימה</a>
+
+  @if (loading()) {
+    <p>טוען...</p>
+  }
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (property(); as p) {
+    <article>
+      <h2>{{ p.title }}</h2>
+      <p class="price">{{ p.price | number }} ₪</p>
+      <p class="address">{{ p.address }}</p>
+      <p class="description">{{ p.description }}</p>
+      @if (p.tags) {
+        <p class="tags"><strong>מאפיינים:</strong> {{ p.tags }}</p>
+      }
+      <p class="created">נוצר: {{ p.createdAt | date:'short' }}</p>
+    </article>
+
+    <section class="ml-panel">
+      <div class="ml-header">
+        <h3>🤖 הערכת מחיר ML.NET</h3>
+        <button type="button" class="toggle-btn" (click)="toggleEstimateForm()">
+          {{ showEstimateForm() ? 'הסתר פרטים' : 'התאם פרטים' }}
+        </button>
+      </div>
+
+      @if (isEstimating()) {
+        <p class="muted">מחשב הערכה...</p>
+      } @else if (estimate(); as e) {
+        <div class="comparison">
+          <div class="col">
+            <div class="label">המודל מעריך</div>
+            <div class="ml-price">{{ e.estimatedPrice | number:'1.0-0' }} ₪</div>
+            <div class="band">{{ e.lowerBound | number:'1.0-0' }} – {{ e.upperBound | number:'1.0-0' }} ₪</div>
+          </div>
+          <div class="col">
+            <div class="label">מחיר ברשימה</div>
+            <div class="listed-price">{{ p.price | number:'1.0-0' }} ₪</div>
+            @if (delta() !== null) {
+              <div class="delta"
+                   [class.over]="delta()! > 5"
+                   [class.under]="delta()! < -5"
+                   [class.fair]="delta()! >= -5 && delta()! <= 5">
+                @if (delta()! > 0) { +{{ delta() }}% } @else { {{ delta() }}% }
+                @if (delta()! > 5) { · מעל ההערכה }
+                @else if (delta()! < -5) { · מתחת להערכה }
+                @else { · בטווח ההוגן }
+              </div>
+            }
+          </div>
+        </div>
+        <p class="hint">ההערכה מתבססת על מודל ML.NET שלמד מ-300 דירות סינתטיות. ההנחות הבסיסיות: עיר {{ estimateForm.controls.city.value }}, {{ estimateForm.controls.rooms.value }} חדרים, {{ estimateForm.controls.sizeSqm.value }} מ"ר. התאם פרטים כדי לדייק.</p>
+      }
+
+      @if (showEstimateForm()) {
+        <form [formGroup]="estimateForm" (ngSubmit)="runEstimate()" class="estimate-form">
+          <label>
+            עיר
+            <select formControlName="city">
+              @for (c of cities(); track c) {
+                <option [value]="c">{{ c }}</option>
+              }
+            </select>
+          </label>
+
+          <div class="row">
+            <label>חדרים<input type="number" formControlName="rooms" min="1" max="10" /></label>
+            <label>גודל (מ"ר)<input type="number" formControlName="sizeSqm" min="20" /></label>
+            <label>קומה<input type="number" formControlName="floor" min="0" /></label>
+            <label>גיל<input type="number" formControlName="age" min="0" /></label>
+          </div>
+
+          <div class="checks">
+            <label class="check"><input type="checkbox" formControlName="hasParking" /> חניה</label>
+            <label class="check"><input type="checkbox" formControlName="hasElevator" /> מעלית</label>
+          </div>
+
+          <button type="submit" class="estimate-btn" [disabled]="isEstimating()">
+            {{ isEstimating() ? 'מחשב...' : 'חשב מחדש' }}
+          </button>
+        </form>
+      }
+    </section>
+
+    @if (canSendLead()) {
+      <section class="lead-form">
+        <h3>שלח פנייה למתווך</h3>
+        @if (leadSent()) {
+          <p class="success">הפנייה נשלחה בהצלחה. המתווך יחזור אליך בקרוב.</p>
+        } @else {
+          <form [formGroup]="leadForm" (ngSubmit)="sendLead()">
+            <label>
+              הודעה
+              <textarea formControlName="message" rows="4"
+                        placeholder="לדוגמה: אני מעוניין לקבוע ביקור בנכס..."></textarea>
+            </label>
+            @if (leadForm.controls.message.touched && leadForm.controls.message.invalid) {
+              <p class="field-error">הודעה חייבת להכיל לפחות 5 תווים</p>
+            }
+            @if (leadError()) {
+              <p class="error">{{ leadError() }}</p>
+            }
+            <button type="submit" [disabled]="isSendingLead()">
+              {{ isSendingLead() ? 'שולח...' : 'שלח' }}
+            </button>
+          </form>
+        }
+      </section>
+    }
+  }
+</div>
