@@ -60,6 +60,7 @@ namespace RealEstate.Infrastructure.Services
             var requestMessage = new
             {
                 model = _model,
+                max_tokens = 256, // מגביל את אורך התשובה כדי לא לחרוג ממכסת הקרדיטים (שגיאת 402)
                 messages = new[]
                 {
                     new { role = "system", content = "You are a real estate expert. Extract 3-5 comma-separated Hebrew tags from the property description (e.g., משופצת, מרווחת, נוף לים). Return ONLY the tags separated by commas, nothing else." },

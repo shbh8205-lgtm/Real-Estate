@@ -76,6 +76,9 @@ namespace RealEstate.Application.Chat
             {
                 model = _model,
                 //response_format = new { type = "json_object" }, // מכריח את המודל להחזיר JSON תקין
+                // מגביל את אורך התשובה. בלי זה OpenRouter מניח את המקסימום של המודל (65K טוקנים)
+                // ודוחה את הבקשה בחשבון חינמי עם שגיאת 402 (אין מספיק קרדיטים).
+                max_tokens = 1024,
                 messages = history.ToArray()
             };
 
