@@ -1,39 +1,14 @@
-// using OpenAI.Embeddings;
-// using RealEstate.Domain.Interfaces;
-
-// public class OpenAiPropertyAnalyst : IAiPropertyAnalyst
-// {
-//     private readonly EmbeddingClient _embeddingClient;
-
-//     public OpenAiPropertyAnalyst()
-//     {
-//         //_embeddingClient = new EmbeddingClient("text-embedding-3-small", apiKey);
-//     }
-
-//     public async Task<float[]> GenerateEmbeddingAsync(string text)
-//     {
-//         // כרגע אנחנו מחזירים מערך דמיוני (Mock) כדי שהמערכת לא תקרוס
-//         // בהמשך, כשיהיה מפתח, נחזיר את הקריאה האמיתית ל-OpenAI
-//         return await Task.FromResult(new float[] { 0.1f, 0.2f, 0.3f });
-//     }
-//     // שאר המתודות (ExtractFeaturesAsync וכו') יישארו כרגע עם מימוש דמי
-//     public async Task<IEnumerable<string>> ExtractFeaturesAsync(string description) =>
-//         new List<string> { "מוארת", "מרפסת" };
-
-//     public async Task<double> GetMatchScoreAsync(string prop, string req) => 0.85;
-// }
-
-
-
-
+using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using RealEstate.Domain.Interfaces;
+using RealEstate.Application.Chat;
 
 namespace RealEstate.Infrastructure.Services
 {
@@ -44,12 +19,23 @@ namespace RealEstate.Infrastructure.Services
         private readonly string _model;
         private readonly string _baseUrl;
 
+        // Embeddings use a dedicated config section: most OpenRouter models/keys don't expose
+        // a real /embeddings endpoint, so this defaults to talking to OpenAI directly. It falls
+        // back to the OpenRouter key/url only if no dedicated Embeddings config is provided.
+        private readonly string _embeddingsApiKey;
+        private readonly string _embeddingsModel;
+        private readonly string _embeddingsBaseUrl;
+
         public OpenAiPropertyAnalyst(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
-            _apiKey = configuration["OpenRouter:ApiKey"];
+            _apiKey = configuration["OpenRouter:ApiKey"] ?? "";
             _model = configuration["OpenRouter:Model"] ?? "google/gemini-2.5-flash";
             _baseUrl = configuration["OpenRouter:BaseUrl"] ?? "https://openrouter.ai/api/v1";
+
+            _embeddingsApiKey = configuration["Embeddings:ApiKey"] ?? _apiKey;
+            _embeddingsModel = configuration["Embeddings:Model"] ?? "text-embedding-3-small";
+            _embeddingsBaseUrl = configuration["Embeddings:BaseUrl"] ?? "https://api.openai.com/v1";
         }
 
         // 1. חילוץ תגיות מהטקסט בעזרת ה-AI
@@ -82,7 +68,7 @@ namespace RealEstate.Infrastructure.Services
 
                 var jsonResult = await response.Content.ReadFromJsonAsync<JsonElement>();
                 var content = jsonResult.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString();
-                
+
                 if (string.IsNullOrWhiteSpace(content)) return fallbackTags;
 
                 return content.Split(',')
@@ -96,18 +82,65 @@ namespace RealEstate.Infrastructure.Services
             }
         }
 
-        // 2. תיקון: הוספת המתודה שהייתה חסרה לחלוטין לפי צילום המסך
-        public async Task<float[]> GenerateEmbeddingAsync(string description)
+        // 2. Embedding אמיתי - זהו הבסיס לחיפוש הסמנטי (RAG). קורא ל-/embeddings
+        //    ומחזיר את הווקטור בפועל, כדי שנוכל לדרג נכסים לפי דמיון סמנטי לשאילתת המשתמש.
+        public async Task<float[]> GenerateEmbeddingAsync(string text)
         {
-            // מחזיר מערך ריק זמני (Mock) כדי שלא יקרוס ויקיים את תנאי הממשק
-            return await Task.FromResult(new float[1536]);
+            if (string.IsNullOrWhiteSpace(text) || string.IsNullOrEmpty(_embeddingsApiKey))
+            {
+                // אין טקסט או שאין מפתח API מוגדר - מחזירים מערך ריק (ולא וקטור-אפס מזויף)
+                // כדי שהקוד הקורא ידע בבירור שאין כאן embedding שאפשר להסתמך עליו.
+                return Array.Empty<float>();
+            }
+
+            var requestBody = new
+            {
+                model = _embeddingsModel,
+                input = text
+            };
+
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{_embeddingsBaseUrl}/embeddings");
+                request.Headers.Add("Authorization", $"Bearer {_embeddingsApiKey}");
+                request.Content = JsonContent.Create(requestBody);
+
+                var response = await _httpClient.SendAsync(request);
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"Embeddings error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
+                    return Array.Empty<float>();
+                }
+
+                var result = await response.Content.ReadFromJsonAsync<EmbeddingsResponse>();
+                var vector = result?.Data?.FirstOrDefault()?.Embedding;
+                return vector ?? Array.Empty<float>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Embeddings exception: {ex.Message}");
+                return Array.Empty<float>();
+            }
         }
 
-        // 3. תיקון: שינוי סוג ההחזרה מ-float ל-double (Task<double>) כפי שהקומפיילר דרש
+        // 3. ציון התאמה אמיתי בין שני טקסטים, מבוסס על דמיון קוסינוס בין ה-Embeddings שלהם.
         public async Task<double> GetMatchScoreAsync(string descriptionA, string descriptionB)
         {
-            // מחזיר ציון דמה קבוע של 85% התאמה
-            return await Task.FromResult(0.85);
+            var vectorA = await GenerateEmbeddingAsync(descriptionA);
+            var vectorB = await GenerateEmbeddingAsync(descriptionB);
+            return VectorMath.CosineSimilarity(vectorA, vectorB);
+        }
+
+        private class EmbeddingsResponse
+        {
+            [JsonPropertyName("data")]
+            public List<EmbeddingData>? Data { get; set; }
+        }
+
+        private class EmbeddingData
+        {
+            [JsonPropertyName("embedding")]
+            public float[]? Embedding { get; set; }
         }
     }
 }

@@ -15,34 +15,42 @@ using RealEstate.Application.Properties.Dtos;
 
 namespace RealEstate.Application.Chat
 {
-
-    // מחלקה פנימית לקבלת התשובה מה-AI
-    public class OpenRouterChatResponse
+    // תשובת ה-AI לשלב הבנת הכוונה (Query Understanding) - עדיין JSON קשיח,
+    // אבל עכשיו משמש רק לחילוץ פילטרים + ניסוח שאילתת חיפוש סמנטית, לא ליצירת התשובה הסופית.
+    public class QueryIntent
     {
-        public string? reply { get; set; }
-        public string? city { get; set; }           // לשמירת תאימות לאחור
+        public string? searchQuery { get; set; }     // תיאור חופשי לחיפוש סמנטי (Embedding)
         public string? cityHebrew { get; set; }
         public string? cityEnglish { get; set; }
         public long? maxPrice { get; set; }
     }
 
+    // תור שיחה מינימלי שנשמר במטמון בין קריאות, כדי לשמר הקשר רב-תורי
+    // (למשל: "תראה לי עוד" אחרי ששאלת קודם על עיר מסוימת)
+    public record ChatTurn(string Role, string Content);
+
     public class ChatHandler : IRequestHandler<ChatQuery, ChatReply>
     {
         private readonly HttpClient _httpClient;
         private readonly IAsyncRepository<Property> _propertyRepository;
+        private readonly IAiPropertyAnalyst _aiAnalyst;
         private readonly IMemoryCache _cache;
         private readonly string _apiKey;
         private readonly string _model;
         private readonly string _baseUrl;
 
+        private const int SuggestionsCount = 3;
+
         public ChatHandler(
             HttpClient httpClient,
             IAsyncRepository<Property> propertyRepository,
+            IAiPropertyAnalyst aiAnalyst,
             IConfiguration configuration,
             IMemoryCache cache)
         {
             _httpClient = httpClient;
             _propertyRepository = propertyRepository;
+            _aiAnalyst = aiAnalyst;
             _cache = cache;
             _apiKey = configuration["OpenRouter:ApiKey"] ?? "";
             _model = configuration["OpenRouter:Model"] ?? "google/gemini-2.5-flash";
@@ -51,117 +59,40 @@ namespace RealEstate.Application.Chat
 
         public async Task<ChatReply> Handle(ChatQuery request, CancellationToken cancellationToken)
         {
-            // הגדלת הקשיחות של ה-Prompt כדי שלא יצא מהתפקיד שלו לעולם
-            var systemPrompt = @"You are a real estate search engine API. 
-    Your ONLY job is to return a strict JSON object. NEVER reply with plain text or explanations.
-    
-    Expected JSON Structure:
-    {
-        ""reply"": ""An encouraging response in Hebrew listing what you found or asking for clarification"",
-        ""cityHebrew"": ""The city name in Hebrew (e.g., 'תל אביב')"",
-        ""cityEnglish"": ""The SAME city name in English (e.g., 'Tel Aviv')"",
-        ""maxPrice"": 3000000
-    }
-
-    Rules:
-    - ALWAYS provide BOTH cityHebrew and cityEnglish for any city mentioned, because the database may store addresses in either language. If no city is mentioned, leave both as empty strings.
-    - If the user asks 'where are the properties?' or 'show me properties', use the previous conversation context to maintain the city and price filters in the JSON.
-    - NEVER say you don't have access to data. You DO have access through the system.";
-
-            var cacheKey = $"chat_{request.ConversationId}";
-            var history = _cache.Get<List<object>>(cacheKey) ?? new List<object>
-    {
-        new { role = "system", content = systemPrompt }
-    };
-
-            history.Add(new { role = "user", content = request.Message });
-
-            var requestMessage = new
-            {
-                model = _model,
-                //response_format = new { type = "json_object" }, // מכריח את המודל להחזיר JSON תקין
-                // מגביל את אורך התשובה. בלי זה OpenRouter מניח את המקסימום של המודל (65K טוקנים)
-                // ודוחה את הבקשה בחשבון חינמי עם שגיאת 402 (אין מספיק קרדיטים).
-                max_tokens = 1024,
-                messages = history.ToArray()
-            };
+            var cacheKey = $"chat_turns_{request.ConversationId}";
+            var turns = _cache.Get<List<ChatTurn>>(cacheKey) ?? new List<ChatTurn>();
 
             try
             {
-                var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/chat/completions");
-                httpRequest.Headers.Add("Authorization", $"Bearer {_apiKey}");
-                httpRequest.Content = JsonContent.Create(requestMessage);
+                // ==== שלב 1: הבנת כוונה (Query Understanding) ====
+                // קריאה קצרה למודל שרק מחלצת פילטרים קשיחים (עיר/תקציב) ומנסחת שאילתת
+                // חיפוש סמנטית מתוך כל השיחה. זה עדיין לא ה-RAG עצמו - זו רק הכנת השאילתה.
+                var intent = await ExtractIntentAsync(turns, request.Message, cancellationToken);
+                var searchQuery = string.IsNullOrWhiteSpace(intent?.searchQuery) ? request.Message : intent!.searchQuery!;
 
-                var response = await _httpClient.SendAsync(httpRequest, cancellationToken);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    var errorText = await response.Content.ReadAsStringAsync();
-                    return GetFallbackReply("מתנצל, יש לי קושי זמני להתחבר לשרת הבינה המלאכותית.");
-                }
-
-                var jsonResult = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
-                var rawContent = jsonResult.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString();
-
-                if (string.IsNullOrWhiteSpace(rawContent))
-                {
-                    return GetFallbackReply("לא קיבלתי תשובה מהמערכת. נסה לנסח מחדש.");
-                }
-
-                // המודל לעיתים עוטף את ה-JSON ב-```json ... ``` או מוסיף טקסט מסביב.
-                // ננקה את העטיפה ונחלץ את אובייקט ה-JSON לפני הפענוח.
-                var aiData = TryParseAiResponse(rawContent);
-
-                if (aiData == null)
-                {
-                    // לא הצלחנו לפענח JSON - נחזיר את הטקסט שהמודל כתב כתשובה רגילה,
-                    // כדי שהמשתמש יקבל מענה במקום שגיאה גנרית.
-                    history.Add(new { role = "assistant", content = rawContent });
-                    _cache.Set(cacheKey, history, TimeSpan.FromMinutes(20));
-                    return GetFallbackReply(rawContent.Trim());
-                }
-
-                // שמירת תשובת ה-AI (הטקסט שהוא ייצר עבור המשתמש) בהיסטוריה
-                history.Add(new { role = "assistant", content = rawContent });
-                _cache.Set(cacheKey, history, TimeSpan.FromMinutes(20));
-
-                // שליפת הדירות מהמאגר
+                // ==== שלב 2: אחזור (Retrieval) - זהו ה-RAG האמיתי ====
+                // מייצרים embedding לשאילתה ומדרגים את הנכסים לפי דמיון קוסינוס
+                // מול ה-DescriptionVector שכבר מחושב ונשמר לכל נכס.
+                var queryVector = await _aiAnalyst.GenerateEmbeddingAsync(searchQuery);
                 var allProperties = await _propertyRepository.ListAllAsync();
-                var filteredProperties = allProperties.AsQueryable();
 
-                // סינון לפי עיר - מתאים גם לכתובות בעברית וגם באנגלית.
-                // ה-AI מחזיר את שם העיר בשתי השפות, ובנוסף אנחנו מרחיבים עם שמות
-                // נרדפים מוכרים, כדי שחיפוש ב"תל אביב" יתפוס גם כתובת "Tel Aviv".
-                var cityCandidates = BuildCityCandidates(aiData);
-                if (cityCandidates.Count > 0)
-                {
-                    filteredProperties = filteredProperties.Where(p =>
-                        !string.IsNullOrEmpty(p.Address) &&
-                        cityCandidates.Any(c => p.Address.Contains(c, StringComparison.OrdinalIgnoreCase)));
-                }
+                var cityCandidates = intent is null ? new List<string>() : BuildCityCandidates(intent);
+                var ranked = RankProperties(allProperties, queryVector, cityCandidates, intent?.maxPrice);
 
-                if (aiData.maxPrice.HasValue && aiData.maxPrice.Value > 0)
-                {
-                    filteredProperties = filteredProperties.Where(p => p.Price <= aiData.maxPrice.Value);
-                }
+                var suggestions = ranked.Take(SuggestionsCount)
+                    .Select(p => new PropertyDto(
+                        p.Id, p.Title, p.Description ?? "", p.Price, p.Address, p.CreatedAt, p.Tags ?? ""))
+                    .ToList();
 
-                var suggestions = filteredProperties.Take(3).Select(p => new PropertyDto(
-                    p.Id,
-                    p.Title,
-                    p.Description ?? "",
-                    p.Price,
-                    p.Address,
-                    p.CreatedAt,
-                    p.Tags ?? ""
-                )).ToList();
+                // ==== שלב 3: יצירה מבוססת-הקשר (Augmented Generation) ====
+                // נותנים למודל בדיוק את הנכסים שאחזרנו (ורק אותם) ומבקשים תשובה טבעית
+                // המתבססת עליהם, כדי למנוע המצאת נכסים שלא קיימים במאגר.
+                var finalReply = await GenerateGroundedReplyAsync(turns, request.Message, suggestions, cityCandidates, intent?.maxPrice, cancellationToken);
 
-                // אם לא נמצאו דירות, נעדכן את הניסוח בצורה ידידותית
-                var finalReply = aiData.reply ?? "הנה הדירות שמצאתי עבורך:";
-                if (suggestions.Count == 0 && cityCandidates.Count > 0)
-                {
-                    var displayCity = aiData.cityHebrew ?? aiData.city ?? aiData.cityEnglish ?? cityCandidates[0];
-                    finalReply = $"חיפשתי במאגר שלנו, אך כרגע לא נמצאו דירות תואמות ב{displayCity} עד תקציב של {aiData.maxPrice} ש\"ח.";
-                }
+                turns.Add(new ChatTurn("user", request.Message));
+                turns.Add(new ChatTurn("assistant", finalReply));
+                if (turns.Count > 20) turns = turns.Skip(turns.Count - 20).ToList(); // מניעת גדילה בלתי מוגבלת
+                _cache.Set(cacheKey, turns, TimeSpan.FromMinutes(20));
 
                 return new ChatReply(finalReply, suggestions);
             }
@@ -171,6 +102,152 @@ namespace RealEstate.Application.Chat
                 return GetFallbackReply("אירעה שגיאה פנימית במהלך שליפת הדירות.");
             }
         }
+
+        // קריאה 1 מתוך 2 ל-LLM: חילוץ כוונה + שאילתת חיפוש סמנטית מתוך השיחה
+        private async Task<QueryIntent?> ExtractIntentAsync(List<ChatTurn> turns, string userMessage, CancellationToken cancellationToken)
+        {
+            var systemPrompt = @"You are the query-understanding module of a real-estate RAG search engine.
+Read the conversation and return ONLY a strict JSON object describing the user's CURRENT search intent:
+{
+    ""searchQuery"": ""A short free-text description (in Hebrew) of what the user is looking for - style, rooms, features, vibe. Used for semantic vector search, so make it descriptive, not just a city name."",
+    ""cityHebrew"": ""City name in Hebrew if mentioned (in this message or earlier in the conversation), else empty string"",
+    ""cityEnglish"": ""The SAME city name in English, else empty string"",
+    ""maxPrice"": 3000000
+}
+Rules:
+- If the user refers back to earlier context (e.g. 'show me more', 'what else is there'), reuse the city/price/intent from earlier turns.
+- NEVER reply with plain text or explanations - JSON only.";
+
+            var messages = new List<object> { new { role = "system", content = systemPrompt } };
+            messages.AddRange(turns.Select(t => (object)new { role = t.Role, content = t.Content }));
+            messages.Add(new { role = "user", content = userMessage });
+
+            var rawContent = await CallChatCompletionAsync(messages, maxTokens: 300, cancellationToken);
+            if (string.IsNullOrWhiteSpace(rawContent)) return null;
+
+            return TryParseJson<QueryIntent>(rawContent);
+        }
+
+        // קריאה 2 מתוך 2 ל-LLM: ניסוח תשובה טבעית שמבוססת אך ורק על הנכסים שאוחזרו
+        private async Task<string> GenerateGroundedReplyAsync(
+            List<ChatTurn> turns,
+            string userMessage,
+            List<PropertyDto> retrievedProperties,
+            List<string> cityCandidates,
+            long? maxPrice,
+            CancellationToken cancellationToken)
+        {
+            var systemPrompt = @"You are a warm, professional Hebrew-speaking real-estate assistant.
+You will be given a list of RETRIEVED properties that were already matched to the user via semantic search -
+this is the ONLY data you are allowed to mention. Write a short, encouraging reply in Hebrew (2-4 sentences):
+- If the list is non-empty, briefly highlight why 1-3 of them fit (mention title/price/address naturally).
+- If the list is empty, say so honestly and suggest the user broaden the city or budget.
+- NEVER invent properties, prices, or addresses that are not in the retrieved list.
+- Reply with plain Hebrew text only - no JSON, no markdown, no field names.";
+
+            var contextPayload = new
+            {
+                userMessage,
+                cityMentioned = cityCandidates.FirstOrDefault(),
+                maxPriceMentioned = maxPrice,
+                retrievedProperties = retrievedProperties.Select(p => new
+                {
+                    p.Id,
+                    p.Title,
+                    p.Description,
+                    p.Price,
+                    p.Address,
+                    p.Tags
+                })
+            };
+
+            var messages = new List<object> { new { role = "system", content = systemPrompt } };
+            messages.AddRange(turns.TakeLast(6).Select(t => (object)new { role = t.Role, content = t.Content }));
+            messages.Add(new { role = "user", content = JsonSerializer.Serialize(contextPayload) });
+
+            var reply = await CallChatCompletionAsync(messages, maxTokens: 400, cancellationToken);
+
+            if (!string.IsNullOrWhiteSpace(reply)) return reply.Trim();
+
+            // רשת ביטחון אם קריאת ה-LLM נכשלה: תשובה בסיסית שעדיין נכונה ביחס לתוצאות שאוחזרו
+            if (retrievedProperties.Count > 0)
+            {
+                return "הנה הדירות שמצאתי עבורך במאגר:";
+            }
+
+            var displayCity = cityCandidates.FirstOrDefault();
+            return displayCity is null
+                ? "לא הצלחתי למצוא דירות מתאימות במאגר כרגע. נסה לתאר מה אתה מחפש בפירוט רב יותר."
+                : $"חיפשתי במאגר שלנו, אך כרגע לא נמצאו דירות תואמות ב{displayCity}" + (maxPrice.HasValue ? $" עד תקציב של {maxPrice} ש\"ח." : ".");
+        }
+
+        // קריאה גנרית ל-endpoint של chat/completions
+        private async Task<string?> CallChatCompletionAsync(List<object> messages, int maxTokens, CancellationToken cancellationToken)
+        {
+            var requestBody = new
+            {
+                model = _model,
+                max_tokens = maxTokens,
+                messages
+            };
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/chat/completions");
+            httpRequest.Headers.Add("Authorization", $"Bearer {_apiKey}");
+            httpRequest.Content = JsonContent.Create(requestBody);
+
+            var response = await _httpClient.SendAsync(httpRequest, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            var jsonResult = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
+            return jsonResult.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString();
+        }
+
+        // דירוג הנכסים: קודם פילטר קשיח (עיר/תקציב) אם קיים, ואז מיון לפי דמיון סמנטי
+        // לשאילתה (Vector Search). אם הפילטר הקשיח לא החזיר תוצאות, נופלים חזרה לדירוג
+        // סמנטי על פני כל המאגר, כדי שהמשתמש עדיין יקבל את ההתאמות הכי קרובות שיש.
+        private static List<Property> RankProperties(
+            IReadOnlyList<Property> allProperties,
+            float[] queryVector,
+            List<string> cityCandidates,
+            long? maxPrice)
+        {
+            IEnumerable<Property> filtered = allProperties;
+
+            if (cityCandidates.Count > 0)
+            {
+                filtered = filtered.Where(p =>
+                    !string.IsNullOrEmpty(p.Address) &&
+                    cityCandidates.Any(c => p.Address.Contains(c, StringComparison.OrdinalIgnoreCase)));
+            }
+
+            if (maxPrice.HasValue && maxPrice.Value > 0)
+            {
+                filtered = filtered.Where(p => p.Price <= maxPrice.Value);
+            }
+
+            var candidates = filtered.ToList();
+            if (candidates.Count == 0)
+            {
+                // אין תוצאות עם הפילטר הקשיח - נופלים חזרה לכל המאגר ומדרגים סמנטית בלבד
+                candidates = allProperties.ToList();
+            }
+
+            var hasQueryVector = VectorMath.IsUsable(queryVector);
+
+            return candidates
+                .Select(p => new
+                {
+                    Property = p,
+                    Score = hasQueryVector ? VectorMath.CosineSimilarity(queryVector, p.DescriptionVector) : 0d
+                })
+                .OrderByDescending(x => x.Score)
+                .Select(x => x.Property)
+                .ToList();
+        }
+
         private ChatReply GetFallbackReply(string message)
         {
             return new ChatReply(message, new List<PropertyDto>());
@@ -206,7 +283,7 @@ namespace RealEstate.Application.Chat
 
         // בונה רשימת מחרוזות לחיפוש בכתובת: מה שה-AI החזיר (עברית/אנגלית)
         // בתוספת שמות נרדפים מוכרים, ללא כפילויות.
-        private static List<string> BuildCityCandidates(OpenRouterChatResponse aiData)
+        private static List<string> BuildCityCandidates(QueryIntent intent)
         {
             var candidates = new List<string>();
 
@@ -219,7 +296,7 @@ namespace RealEstate.Application.Chat
                 }
             }
 
-            foreach (var raw in new[] { aiData.cityHebrew, aiData.cityEnglish, aiData.city })
+            foreach (var raw in new[] { intent.cityHebrew, intent.cityEnglish })
             {
                 if (string.IsNullOrWhiteSpace(raw)) continue;
                 var c = raw.Trim();
@@ -242,7 +319,7 @@ namespace RealEstate.Application.Chat
         }
 
         // מחלץ אובייקט JSON מתוך תשובת המודל, גם אם הוא עטוף ב-```json``` או מלווה בטקסט.
-        private static OpenRouterChatResponse? TryParseAiResponse(string rawContent)
+        private static T? TryParseJson<T>(string rawContent) where T : class
         {
             var start = rawContent.IndexOf('{');
             var end = rawContent.LastIndexOf('}');
@@ -254,7 +331,7 @@ namespace RealEstate.Application.Chat
             var json = rawContent.Substring(start, end - start + 1);
             try
             {
-                return JsonSerializer.Deserialize<OpenRouterChatResponse>(
+                return JsonSerializer.Deserialize<T>(
                     json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
             catch (JsonException)
